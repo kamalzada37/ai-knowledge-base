@@ -43,6 +43,19 @@ This project is a collaborative knowledge base that allows users to:
    git clone https://github.com/@kamalzada37/ai-knowledge-base.git
    cd ai-knowledge-base
 
+git remote add origin https://github.com/kamalzada37/ai-knowledge-base
+
+pip install streamlit langchain ollama chromadb duckduckgo-search requests beautifulsoup4 python-telegram-bot
+
+
+pip install streamlit langchain ollama chromadb duckduckgo-search requests beautifulsoup4 wordcloud matplotlib
+
+pip install python-telegram-bot ollama
+
+pip install pymupdf langchain text-splitter
+
+
+pip install pymupdf langchain langchain-text-splitters
 
 (Optional) Web Interface
 If needed for demos or internal testing, you can also run the Streamlit app:
