@@ -98,6 +98,13 @@ def process_uploaded_file(uploaded_file):
     
     return text  
 
+def generate_cloud(text):
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    fig, ax = plt.subplots()
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis("off")
+    st.pyplot(fig)
+
 def main():  
     setup_page()  
     
@@ -138,6 +145,7 @@ def main():
             st.subheader("🤖 AI Response")  
             response = query_ollama(query, context)  
             st.write(response)  
+            generate_cloud(context)
             
             st.session_state.chat_history.append({"query": query, "response": response})  
 
