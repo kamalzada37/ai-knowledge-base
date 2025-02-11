@@ -11,31 +11,26 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from langchain_ollama import OllamaEmbeddings  
 import ollama  
 
-# Constants  
-TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"  # Insert your token here  
+TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"    
 CHROMA_DB_PATH = "chroma_db"  
 COLLECTION_NAME = "knowledge_base"  
-ADMIN_CHAT_ID = 123456789  # Replace with actual admin chat ID  
+ADMIN_CHAT_ID = 123456789  
 LLM_MODEL = "llama3.2"  
 
-# Global chat history and user data storage  
 chat_history = {}  
 user_data = {}  
 
-# Initialize database  
 def initialize_chromadb():  
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH)  
     return client.get_or_create_collection(name=COLLECTION_NAME)  
 
 collection = initialize_chromadb()  
 
-# Profanity Filtering  
 def sanitize_text(text):  
     swear_words = ["badword1", "badword2", "badword3"]  
     pattern = re.compile(r'\b(' + '|'.join(swear_words) + r')\b', re.IGNORECASE)  
     return pattern.sub("****", text)  
 
-# Document Processing  
 def process_document(file_bytes: bytes, filename: str) -> str:  
     if filename.lower().endswith('.pdf'):  
         doc = fitz.open(stream=file_bytes, filetype="pdf")  
@@ -51,7 +46,6 @@ def process_document(file_bytes: bytes, filename: str) -> str:
     collection.add(documents=[sanitized_text], metadatas=[{"source": filename}])  
     return sanitized_text  
 
-# Web Page Processing  
 def process_web_document(url: str) -> bool:  
     try:  
         response = requests.get(url)  
@@ -65,7 +59,6 @@ def process_web_document(url: str) -> bool:
         print(f"Failed to process web document: {e}")  
         return False  
 
-# Query Processing with LLM  
 embedding_function = OllamaEmbeddings(model=LLM_MODEL, base_url="http://localhost:11434")  
 def query_ollama(query: str) -> str:  
     sanitized_query = sanitize_text(query)  
@@ -79,7 +72,6 @@ def query_ollama(query: str) -> str:
     except Exception as e:  
         return f"Error: {e}"  
 
-# Word Cloud Generation  
 def generate_wordcloud_text() -> str:  
     try:  
         all_docs = collection.get()  
@@ -98,7 +90,6 @@ def generate_wordcloud_image(text: str) -> io.BytesIO:
     plt.close(fig)  
     return buf  
 
-# Telegram Bot Handlers  
 async def handle_document(update: Update, context: CallbackContext) -> None:  
     user_id = update.effective_user.id  
     document = update.message.document  
